@@ -167,9 +167,15 @@ const setLocalData = (key, value) => {
 };
 
 const handleResponse = async (res) => {
-  const data = await res.json();
+  let data;
+  try {
+    const text = await res.text();
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    data = {};
+  }
   if (!res.ok) {
-    throw new Error(data.message || 'Something went wrong with the request');
+    throw new Error(data.message || `Request failed (${res.status}: ${res.statusText || 'Server Error'})`);
   }
   return data;
 };

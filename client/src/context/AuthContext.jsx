@@ -36,12 +36,15 @@ export const AuthProvider = ({ children }) => {
     setAuthError(null);
     try {
       const res = await api.auth.login(email, password);
-      if (res.success && res.token) {
+      if (res && res.success && res.token) {
         localStorage.setItem('studytrack_token', res.token);
         setToken(res.token);
         setUser(res.user);
         return { success: true };
       }
+      const msg = res?.message || 'Invalid email or password';
+      setAuthError(msg);
+      return { success: false, error: msg };
     } catch (err) {
       setAuthError(err.message);
       return { success: false, error: err.message };
@@ -52,12 +55,15 @@ export const AuthProvider = ({ children }) => {
     setAuthError(null);
     try {
       const res = await api.auth.register(name, email, password);
-      if (res.success && res.token) {
+      if (res && res.success && res.token) {
         localStorage.setItem('studytrack_token', res.token);
         setToken(res.token);
         setUser(res.user);
         return { success: true };
       }
+      const msg = res?.message || 'Registration failed';
+      setAuthError(msg);
+      return { success: false, error: msg };
     } catch (err) {
       setAuthError(err.message);
       return { success: false, error: err.message };
