@@ -33,7 +33,22 @@ app.use('/api/tasks', require('./routes/taskRoutes'));
 app.use('/api/sessions', require('./routes/sessionRoutes'));
 app.use('/api/analytics', require('./routes/analyticsRoutes'));
 
-// 404 Route Handler
+const path = require('path');
+const fs = require('fs');
+
+// Serve static assets in production if client build exists
+const clientDistPath = path.join(__dirname, '../client/dist');
+if (fs.existsSync(clientDistPath)) {
+  app.use(express.static(clientDistPath));
+  app.get('*', (req, res, next) => {
+    if (req.originalUrl.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(path.join(clientDistPath, 'index.html'));
+  });
+}
+
+// 404 Route Handler for unmatched API routes
 app.use((req, res, next) => {
   res.status(404).json({ success: false, message: `API route not found: ${req.originalUrl}` });
 });

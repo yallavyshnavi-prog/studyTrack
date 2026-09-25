@@ -1,6 +1,6 @@
 // StudyTrack API Client with JWT Bearer Token Support and Offline Resilience
 
-const BASE_URL = '/api';
+const BASE_URL = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/+$/, '') : '/api';
 
 const getHeaders = () => {
   const token = localStorage.getItem('studytrack_token');

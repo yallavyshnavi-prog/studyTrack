@@ -4,7 +4,6 @@ import { api } from '../services/api';
 import {
   X,
   User,
-  Clock,
   Award,
   Sparkles,
   Flame,

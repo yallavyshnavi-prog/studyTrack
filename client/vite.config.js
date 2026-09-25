@@ -18,4 +18,18 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1500,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('three')) return 'three';
+            if (id.includes('lucide-react') || id.includes('canvas-confetti')) return 'ui';
+            return 'vendor';
+          }
+        },
+      },
+    },
+  },
 })

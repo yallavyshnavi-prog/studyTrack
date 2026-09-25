@@ -15,10 +15,8 @@ import {
   VolumeX,
   Sparkles,
   BookOpen,
-  Tag,
   Coffee,
   Brain,
-  Sliders,
   Award,
 } from 'lucide-react';
 
@@ -30,7 +28,7 @@ const TIMER_PRESETS = [
 ];
 
 export const FocusTimer = ({ isAmbientPlaying, toggleAmbientSound, onSessionCompleted, initialSubject }) => {
-  const { user, updateUser } = useAuth();
+  const { updateUser } = useAuth();
   const [timerMode, setTimerMode] = useState('pomodoro');
   const [durationMinutes, setDurationMinutes] = useState(25);
   const [timeLeft, setTimeLeft] = useState(25 * 60);

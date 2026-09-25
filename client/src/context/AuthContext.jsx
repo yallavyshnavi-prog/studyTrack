@@ -75,7 +75,7 @@ export const AuthProvider = ({ children }) => {
 
       // If doesn't exist, create demo account
       return await register('Alex Rivera (Demo)', demoEmail, demoPassword);
-    } catch (err) {
+    } catch {
       // In case server is offline or mock, fallback smoothly
       const mockUser = {
         id: 'demo-user-id',

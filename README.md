@@ -90,5 +90,38 @@ npm run dev
 
 ---
 
+## 🌐 Production Deployment Guide
+
+### Option A: Unified Full-Stack Deployment (Render / Railway / Heroku)
+The project includes a root `package.json` and production SPA serving inside Express.
+1. Connect your repository to **Render** or **Railway**.
+2. Set Build Command:
+   ```bash
+   npm run install:all && npm run build
+   ```
+3. Set Start Command:
+   ```bash
+   npm start
+   ```
+4. Set Environment Variables:
+   - `MONGODB_URI`: Your MongoDB Atlas connection string
+   - `JWT_SECRET`: A long random secret string
+   - `NODE_ENV`: `production`
+
+### Option B: Separate Frontend (Vercel) & Backend (Render)
+- **Frontend (Vercel)**:
+  - Root directory: `client`
+  - Build command: `npm run build`
+  - Output directory: `dist`
+  - Environment Variable: `VITE_API_URL=https://<your-backend-url>/api`
+- **Backend (Render / Railway)**:
+  - Root directory: `server`
+  - Build command: `npm install`
+  - Start command: `npm start`
+  - Environment Variables: `MONGODB_URI`, `JWT_SECRET`
+
+---
+
 ## 📄 License
 MIT © 2026 StudyTrack
+
