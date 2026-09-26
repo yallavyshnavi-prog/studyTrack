@@ -36,34 +36,34 @@ export const Navbar = ({
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-[#070810]/80 border-b border-white/10 transition-all">
+    <header className="sticky top-0 z-50 w-full backdrop-blur-2xl bg-[#060816]/75 border-b border-indigo-500/15 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         
         {/* Brand Logo */}
         <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('timer')}>
-          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-cyan-400 p-[1px] shadow-lg shadow-indigo-500/25">
-            <div className="w-full h-full bg-[#0d0f1d] rounded-xl flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-indigo-400 animate-pulse" />
+          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-400 via-indigo-500 to-purple-600 p-[1.5px] shadow-lg shadow-indigo-500/30">
+            <div className="w-full h-full bg-[#090c22] rounded-xl flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-cyan-300 animate-pulse" />
             </div>
             <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-400"></span>
             </span>
           </div>
           <div>
             <div className="flex items-center space-x-1.5">
-              <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-indigo-100 to-indigo-300 bg-clip-text text-transparent">
+              <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-cyan-100 to-indigo-200 bg-clip-text text-transparent">
                 StudyTrack
               </span>
-              <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                3D AI
+              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 shadow-sm shadow-cyan-500/20">
+                Cosmic AI
               </span>
             </div>
           </div>
         </div>
 
         {/* Center Navigation Tabs */}
-        <nav className="hidden md:flex items-center space-x-1 glass-panel px-1.5 py-1 rounded-2xl">
+        <nav className="hidden md:flex items-center space-x-1.5 glass-panel px-2 py-1 rounded-2xl border border-indigo-500/20">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -73,11 +73,11 @@ export const Navbar = ({
                 onClick={() => setActiveTab(item.id)}
                 className={`relative flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${
                   isActive
-                    ? 'text-white bg-indigo-600/80 shadow-md shadow-indigo-500/30 border border-indigo-400/40'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
+                    ? 'text-white bg-gradient-to-r from-indigo-600/90 to-cyan-600/90 shadow-lg shadow-cyan-500/20 border border-cyan-400/40 font-bold'
+                    : 'text-slate-300 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-cyan-300' : 'text-slate-400'}`} />
+                <Icon className={`w-4 h-4 ${isActive ? 'text-cyan-200' : 'text-slate-400'}`} />
                 <span>{item.label}</span>
               </button>
             );
@@ -197,7 +197,7 @@ export const Navbar = ({
       </div>
 
       {/* Mobile Bottom Navigation Bar */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0a0b16]/95 backdrop-blur-xl border-t border-white/10 px-2 py-2 flex items-center justify-around">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#060818]/92 backdrop-blur-2xl border-t border-indigo-500/20 px-2 py-2 flex items-center justify-around shadow-2xl">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -206,10 +206,10 @@ export const Navbar = ({
               key={item.id}
               onClick={() => setActiveTab(item.id)}
               className={`flex flex-col items-center py-1 px-2 rounded-xl text-[10px] font-medium transition ${
-                isActive ? 'text-indigo-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+                isActive ? 'text-cyan-300 font-bold' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              <Icon className={`w-5 h-5 mb-0.5 ${isActive ? 'text-cyan-400 scale-110' : 'text-slate-400'}`} />
+              <Icon className={`w-5 h-5 mb-0.5 ${isActive ? 'text-cyan-400 scale-110 drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]' : 'text-slate-400'}`} />
               <span>{item.label}</span>
             </button>
           );
