@@ -16,8 +16,12 @@ export const AuthProvider = ({ children }) => {
       if (storedToken) {
         try {
           const res = await api.auth.getMe();
-          if (res.success && res.user) {
+          if (res && res.success && res.user) {
             setUser(res.user);
+          } else {
+            localStorage.removeItem('studytrack_token');
+            setToken(null);
+            setUser(null);
           }
         } catch (err) {
           console.warn('Session expired or invalid token:', err.message);
@@ -77,27 +81,30 @@ export const AuthProvider = ({ children }) => {
       const demoEmail = 'demo@studytrack.app';
       const demoPassword = 'password123';
       const loginAttempt = await login(demoEmail, demoPassword);
-      if (loginAttempt.success) return { success: true };
+      if (loginAttempt && loginAttempt.success) return { success: true };
 
       // If doesn't exist, create demo account
-      return await register('Alex Rivera (Demo)', demoEmail, demoPassword);
-    } catch {
-      // In case server is offline or mock, fallback smoothly
-      const mockUser = {
-        id: 'demo-user-id',
-        name: 'Alex Rivera (Demo)',
-        email: 'demo@studytrack.app',
-        avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Alex',
-        targetDailyHours: 4,
-        xp: 320,
-        level: 3,
-        streak: 5,
-      };
-      setUser(mockUser);
-      setToken('demo-token');
-      localStorage.setItem('studytrack_token', 'demo-token');
-      return { success: true };
+      const registerAttempt = await register('Alex Rivera (Demo)', demoEmail, demoPassword);
+      if (registerAttempt && registerAttempt.success) return { success: true };
+    } catch (e) {
+      console.warn('Demo remote login notice:', e.message);
     }
+
+    // In case server is offline or unreachable, fallback smoothly to local offline session
+    const mockUser = {
+      id: 'demo-user-id',
+      name: 'Alex Rivera (Demo)',
+      email: 'demo@studytrack.app',
+      avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Alex',
+      targetDailyHours: 4,
+      xp: 320,
+      level: 3,
+      streak: 5,
+    };
+    setUser(mockUser);
+    setToken('demo-token');
+    localStorage.setItem('studytrack_token', 'demo-token');
+    return { success: true };
   };
 
   const logout = () => {

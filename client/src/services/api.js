@@ -1,6 +1,19 @@
-// StudyTrack API Client with JWT Bearer Token Support and Offline Resilience
+// StudyTrack API Client with JWT Bearer Token Support and Dynamic Environment Detection
 
-const BASE_URL = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/+$/, '') : '/api';
+const getApiBaseUrl = () => {
+  // If explicitly configured via Vite env var (e.g. VITE_API_URL in .env or Vercel dashboard)
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL.replace(/\/+$/, '');
+  }
+  // In production builds (Vercel, production SPA, etc.), connect directly to the deployed Render backend
+  if (import.meta.env.PROD) {
+    return 'https://studytrack-1-oe4v.onrender.com/api';
+  }
+  // In local development, use relative '/api' which Vite proxies to localhost:5000
+  return '/api';
+};
+
+const BASE_URL = getApiBaseUrl();
 
 const getHeaders = () => {
   const token = localStorage.getItem('studytrack_token');
@@ -167,13 +180,23 @@ const setLocalData = (key, value) => {
 };
 
 const handleResponse = async (res) => {
+  let text = '';
+  try {
+    text = await res.text();
+  } catch {
+    text = '';
+  }
+
   let data;
   try {
-    const text = await res.text();
     data = text ? JSON.parse(text) : {};
   } catch {
-    data = {};
+    if (!res.ok) {
+      throw new Error(`Server error (${res.status}: ${res.statusText || 'Failed'})`);
+    }
+    throw new Error('Received non-JSON response from server. Check API URL configuration.');
   }
+
   if (!res.ok) {
     throw new Error(data.message || `Request failed (${res.status}: ${res.statusText || 'Server Error'})`);
   }
@@ -192,8 +215,9 @@ export const api = {
         });
         return await handleResponse(res);
       } catch (err) {
-        // Fallback for offline demo
-        if (email.toLowerCase().includes('demo')) {
+        // Fallback for offline demo only when network fails and demo email is used
+        const isNetworkErr = err.name === 'TypeError' || (err.message && (err.message.includes('fetch') || err.message.includes('Network') || err.message.includes('Failed')));
+        if (email.toLowerCase().includes('demo') && isNetworkErr) {
           const user = {
             id: 'demo-user-id',
             name: 'Alex Rivera (Demo)',
@@ -218,18 +242,22 @@ export const api = {
         });
         return await handleResponse(res);
       } catch (err) {
-        // Fallback for offline register
-        const user = {
-          id: 'user-' + Date.now(),
-          name,
-          email,
-          avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(name)}`,
-          targetDailyHours: 4,
-          xp: 50,
-          level: 1,
-          streak: 1,
-        };
-        return { success: true, token: 'demo-local-jwt', user };
+        // Fallback for offline register only if true network failure
+        const isNetworkErr = err.name === 'TypeError' || (err.message && (err.message.includes('fetch') || err.message.includes('Network') || err.message.includes('Failed')));
+        if (isNetworkErr) {
+          const user = {
+            id: 'user-' + Date.now(),
+            name,
+            email,
+            avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(name)}`,
+            targetDailyHours: 4,
+            xp: 50,
+            level: 1,
+            streak: 1,
+          };
+          return { success: true, token: 'demo-local-jwt', user };
+        }
+        throw err;
       }
     },
     getMe: async () => {
@@ -238,18 +266,22 @@ export const api = {
           headers: getHeaders(),
         });
         return await handleResponse(res);
-      } catch {
-        const localUser = getLocalData('user', {
-          id: 'demo-user-id',
-          name: 'Alex Rivera (Demo)',
-          email: 'demo@studytrack.app',
-          avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Alex',
-          targetDailyHours: 4,
-          xp: 420,
-          level: 4,
-          streak: 5,
-        });
-        return { success: true, user: localUser };
+      } catch (err) {
+        const storedToken = localStorage.getItem('studytrack_token');
+        if (storedToken === 'demo-local-jwt' || storedToken === 'demo-token') {
+          const localUser = getLocalData('user', {
+            id: 'demo-user-id',
+            name: 'Alex Rivera (Demo)',
+            email: 'demo@studytrack.app',
+            avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Alex',
+            targetDailyHours: 4,
+            xp: 420,
+            level: 4,
+            streak: 5,
+          });
+          return { success: true, user: localUser };
+        }
+        throw err;
       }
     },
     updateProfile: async (profileData) => {

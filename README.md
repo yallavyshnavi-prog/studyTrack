@@ -2,6 +2,11 @@
 
 An immersive full-stack study productivity application engineered with **React 19**, **Three.js**, **Node.js**, **Express**, and **MongoDB**. Features interactive 3D concentration visualization, Pomodoro & Deep-Dive focus timers, binaural alpha focus audio, gamified XP & streak progression, task management, and curriculum tracking.
 
+### 🌐 Live Deployments
+- **Frontend (Vercel)**: [https://study-track-tvnk.vercel.app](https://study-track-tvnk.vercel.app)
+- **Backend API (Render)**: [https://studytrack-1-oe4v.onrender.com](https://studytrack-1-oe4v.onrender.com)
+- **API Health Check**: [https://studytrack-1-oe4v.onrender.com/api/health](https://studytrack-1-oe4v.onrender.com/api/health)
+
 ---
 
 ## ✨ Features
